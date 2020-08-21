@@ -10,59 +10,59 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class HomeActivity extends AppCompatActivity {
 
+    private RequestQueue requestQueue;
     private final String TAG = "HomeActivity";
-
-    private String data = "[\n" +
-            "    {\n" +
-            "        \"id\":\"1\",\n" +
-            "        \"product\":\"Coffee Milk\",\n" +
-            "        \"img\": \"https://www.baristainstitute.com/sites/default/files/styles/some_share/public/images/Tazza_Ice_Latte.jpg?itok=nb39ZGmv\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "        \"id\":\"2\",\n" +
-            "        \"product\":\"Latte\",\n" +
-            "        \"img\": \"https://www.nespresso.com/ncp/res/resized/w1200_h630/uploads/recipes/nespresso-recipes-Iced-Latte.jpg\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "        \"id\":\"3\",\n" +
-            "        \"product\":\"Coffee\",\n" +
-            "        \"img\": \"https://media-cdn.tripadvisor.com/media/photo-s/0e/96/7f/97/coffe-latte-100-arabica.jpg\"\n" +
-            "    }\n" +
-            "]";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        requestQueue = Volley.newRequestQueue(this);
         loadItem();
     }
 
-    public  void btnHome(View v){
-        MyFunction obj = new MyFunction();
-        obj.btnlogin(this);
-    }
-
-    private void initRecycler(final JSONArray arrData){
+    private void initRecycler(final JSONArray arrData) {
         final RecyclerView recycler = findViewById(R.id.recycler);
-        final LinearLayoutManager manager = new LinearLayoutManager(this,RecyclerView.VERTICAL,false);
+        final LinearLayoutManager manager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         recycler.setLayoutManager(manager);
-        recycler.setAdapter(new AdapterRecycler(this,arrData));
+        recycler.setAdapter(new AdapterRecycler(this, arrData));
     }
 
-    private void loadItem(){
-        try {
-            final JSONArray arrItem = new JSONArray(data);
-            initRecycler(arrItem);
-        }catch (Exception e){
-            Log.e("error","error");
-        }
-    }
+    private void loadItem() {
+        final MyFunction obj = new MyFunction();
+        obj.showProgress(this, R.id.progress, View.VISIBLE);
+        requestQueue.add(obj.requestDataApi(Request.Method.GET, "https://api.mocki.io/v1/affa9a12", null, new ListenerVolley() {
+            @Override
+            public void response(String res) {
+                try {
+                    final JSONArray arrItem = new JSONArray(res);
+                    initRecycler(arrItem);
+                } catch (Exception e) {
+                    Log.e("Error", "error");
+                }
+                obj.showProgress(HomeActivity.this, R.id.progress, View.GONE);
+            }
 
+            @Override
+            public void error(VolleyError err) {
+                obj.showProgress(HomeActivity.this, R.id.progress, View.GONE);
+                Log.e("Error", err.getMessage() + "");
+            }
+
+        }));
+    }
 
 
 }
