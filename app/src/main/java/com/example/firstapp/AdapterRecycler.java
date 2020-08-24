@@ -36,6 +36,7 @@ public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        final MyFunction obj = new MyFunction();
         try{
             final JSONObject objData = array.getJSONObject(position);
             holder.tvCoffee.setText(objData.getString("product"));
@@ -47,9 +48,8 @@ public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHo
             holder.card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context,Details.class);
-                    context.startActivity(intent);
-                }
+                    obj.openActivity(context,Details.class);
+            }
             });
         }catch (Exception e){
             Log.e("Err",e.getMessage()+"");
