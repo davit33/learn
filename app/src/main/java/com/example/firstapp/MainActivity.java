@@ -1,9 +1,15 @@
 package com.example.firstapp;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +27,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,10 +44,55 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+       /* BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.e("Err","Testing");
+            }
+        };
+
+        IntentFilter filter = new IntentFilter("msg");
+        registerReceiver(broadcastReceiver,filter);*/
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((broadcastReceiver), new IntentFilter("fcm"));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         requestQueue = Volley.newRequestQueue(this);
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("Err", "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log and toast
+
+                        Log.e("Token", token);
+                    }
+                });
+
     }
 
     public void login(View v) {
@@ -49,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
             loadMain(edtGmail.getText().toString(), edtPass.getText().toString());
         } else
             Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
-
     }
 
     private void loadMain(final String username, final String password) {
@@ -65,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("Response", res);
                     if (obj.isJSONValid(res)) {
                         obj.openActivity(MainActivity.this, HomeActivity.class);
+                        Signton.getInstance().setA(10);
                     } else {
                         final int code = Integer.parseInt(res);
                         Toast.makeText(MainActivity.this, "Incorrect Username Or Password", Toast.LENGTH_SHORT).show();
@@ -82,4 +137,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }));
     }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            MyFunction obj = new MyFunction();
+            obj.showCustomDialog(MainActivity.this);
+        }
+    };
 }

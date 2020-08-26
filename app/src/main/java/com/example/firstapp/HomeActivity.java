@@ -32,6 +32,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         requestQueue = Volley.newRequestQueue(this);
+        Toast.makeText(this, ""+Signton.getInstance().getA(), Toast.LENGTH_SHORT).show();
         loadItem();
     }
 
