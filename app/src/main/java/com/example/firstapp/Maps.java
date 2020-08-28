@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -25,12 +26,16 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+    public void onMapReady(GoogleMap map) {
+        mMap = map;
+        LatLng sydney = new LatLng(-33.867, 151.206);
 
-        // Add a marker and move the camera
-        LatLng Cambodia = new LatLng(11.562108, 104.888535);
-        mMap.addMarker(new MarkerOptions().position(Cambodia).title("Marker in phnom penh"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(Cambodia));
+        mMap.setMyLocationEnabled(true);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13));
+
+        mMap.addMarker(new MarkerOptions()
+                .title("Sydney")
+                .snippet("The most populous city in Australia.")
+                .position(sydney));
     }
 }

@@ -21,6 +21,6 @@ public class Details extends AppCompatActivity {
     public void btnBack(View v){
         Intent intent = new Intent(this,HomeActivity.class);
         this.startActivity(intent);
-        finish();
+        MyFunction.getInstance().finishActivity(this);
     }
 }

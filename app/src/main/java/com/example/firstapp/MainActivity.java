@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -49,19 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-       /* BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.e("Err","Testing");
-            }
-        };
-
-        IntentFilter filter = new IntentFilter("msg");
-        registerReceiver(broadcastReceiver,filter);*/
-    }
 
     @Override
     protected void onStart() {
@@ -74,6 +62,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         requestQueue = Volley.newRequestQueue(this);
+
+        /*save login user*/
+        MyFunction obj = new MyFunction();
+        if (obj.isHistory(this)) {
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -92,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("Token", token);
                     }
                 });
+
 
     }
 
@@ -118,8 +115,8 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     Log.e("Response", res);
                     if (obj.isJSONValid(res)) {
+                        obj.getInstance().saveText(MainActivity.this, Global.INFO_FILE, res);
                         obj.openActivity(MainActivity.this, HomeActivity.class);
-                        Signton.getInstance().setA(10);
                     } else {
                         final int code = Integer.parseInt(res);
                         Toast.makeText(MainActivity.this, "Incorrect Username Or Password", Toast.LENGTH_SHORT).show();

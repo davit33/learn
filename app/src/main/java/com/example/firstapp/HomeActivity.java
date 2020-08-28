@@ -1,11 +1,15 @@
 package com.example.firstapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +22,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,8 +40,13 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         requestQueue = Volley.newRequestQueue(this);
-        Toast.makeText(this, ""+Signton.getInstance().getA(), Toast.LENGTH_SHORT).show();
         loadItem();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((broadcastReceiver), new IntentFilter("fcm"));
     }
 
     private void initRecycler(final JSONArray arrData) {
@@ -71,6 +84,14 @@ public class HomeActivity extends AppCompatActivity {
         MyFunction obj = new MyFunction();
         obj.openActivity(HomeActivity.this, Maps.class);
     }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            MyFunction obj = new MyFunction();
+            obj.showCustomDialog(HomeActivity.this);
+        }
+    };
 
 
 }

@@ -45,30 +45,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="Hello"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/lyt_action"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp"
-        android:gravity="center"
-        android:orientation="horizontal">
+<!--    <LinearLayout-->
+<!--        android:id="@+id/lyt_action"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginBottom="25dp"-->
+<!--        android:gravity="center"-->
+<!--        android:orientation="horizontal">-->
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/bt_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:background="@drawable/shapecircle"
-            android:paddingLeft="25dp"
-            android:paddingRight="25dp"
-            android:text="Retry"
-            android:textColor="@android:color/white" />
+<!--        <androidx.appcompat.widget.AppCompatButton-->
+<!--            android:id="@+id/bt_close"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            style="@style/Widget.AppCompat.Button.Borderless"-->
+<!--            android:background="@drawable/shapecircle"-->
+<!--            android:paddingLeft="25dp"-->
+<!--            android:paddingRight="25dp"-->
+<!--            android:text="Retry"-->
+<!--            android:textColor="@android:color/white" />-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
 </LinearLayout>
